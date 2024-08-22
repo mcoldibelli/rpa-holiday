@@ -31,12 +31,23 @@ Com essas informações em mãos, crie uma tabela no **postgres** para salvar os
 Como última etapa do nosso processo de avaliação envie os dados que estão salvos no banco para nossa API conforme as especificações abaixo:
 
 - **MÉTODO:** `POST` 
-- **URL:** `http://spprev.ambientalqvt.com.br/dinamico/avaliacao-vaga/:token`
+- **URL:** `http://spprev.ambientalqvt.com.br/dinamico/avaliacao-vaga`
+
+```txt
+[BEARER TOKEN] <token_que_te_enviaremos>
+```
 
 ```json
 {
     "estado": "NOME_DO_ESTADO",
     "cidade": "NOME_DA_CIDADE",
+    "feriados": [
+        {
+            "data": "DD/MM/YYYY",
+            "feriado": "NOME_DO_FERIADO",
+        },
+        ...
+    ]
 }
 ```
 
