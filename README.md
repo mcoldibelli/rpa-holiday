@@ -4,7 +4,7 @@
 
 Este repositório tem o objetivo de testar suas habilidades com relação a criação de uma API REST utilizando o framework **Spring Boot**, juntamente com o banco de dados **Postgres**
 
-[Descrição do Problema](#descrição-do-problema)  &nbsp;&bull;&nbsp; [Execução](#-executando-o-projeto) &nbsp;&bull;&nbsp; [Entrega](#-executando)
+[Descrição do Problema](#page_facing_up-descrição-do-problema)  &nbsp;&bull;&nbsp; [Execução](#gear-executando-o-projeto) &nbsp;&bull;&nbsp; [Entrega](#package-entrega-do-projeto)
 
 </div>
 
