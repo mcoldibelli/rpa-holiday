@@ -21,20 +21,21 @@ Com essas informações em mãos, crie uma tabela no **postgres** para salvar os
 ### :pushpin: Etapas
 
 1. Faça o clone do projeto
-2. Monte um RPA utilizando **Selenium**
-3. Extraia os dados do site `feriados.com.br` com base na planilha fornecida
-3. Salve os dados extraídos no **Postgres**
-4. Busque os dados do **Postgres** e envie-os a nossa [API](#api)
+2. Monte uma lógica para extrair os dados do Excel que lhe foi enviado
+3. Monte um RPA utilizando **Selenium** para extrair os dados dos feriados municipais e nacionais do site `feriados.com.br` para cada cidade/estado contido na planilha
+4. Salve os dados extraídos no **Postgres** (necessário criar uma tabela para guardar os dados)
+5. Busque os dados do **Postgres** e envie-os a nossa [API](#api)
 
 ### API
 
 Como última etapa do nosso processo de avaliação envie os dados que estão salvos no banco para nossa API conforme as especificações abaixo:
 
 - **MÉTODO:** `POST` 
-- **URL:** `http://spprev.ambientalqvt.com.br/dinamico/avaliacao-vaga`
+- **URL:** `https://spprev.ambientalqvt.com.br/api/dinamico/avaliacao-vaga/registrar-feriados`
 
 ```txt
-[BEARER TOKEN] <token_que_te_enviaremos>
+    Autenticação:
+[BEARER TOKEN] <token_enviado>
 ```
 
 ```json
