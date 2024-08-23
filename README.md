@@ -44,6 +44,7 @@ Como última etapa do nosso processo de avaliação envie os dados que estão sa
     "feriados": [
         {
             "data": "DD/MM/YYYY",
+            "tipo": "MUNICIPAL | NACIONAL",
             "feriado": "NOME_DO_FERIADO",
         },
         ...
@@ -54,16 +55,13 @@ Como última etapa do nosso processo de avaliação envie os dados que estão sa
 #### :heavy_check_mark: Retorno de Sucesso
 
 ```json
-{
-    "sucesso": true,
-}
+// Não retorna dados
 ```
 
 #### :x: Retorno de Erro
 
 ```json
-{
-    "sucesso": false,
+{    
     "mensagem": "MENSAGEM_DE_ERRO"
 }
 ```
