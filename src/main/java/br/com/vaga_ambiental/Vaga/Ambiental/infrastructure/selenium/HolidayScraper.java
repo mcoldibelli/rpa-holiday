@@ -62,7 +62,7 @@ public class HolidayScraper {
             log.info("{} has {} holiday(s) in {}.", city.getName(), holidays.size(), year);
 
         } catch (Exception e) {
-            log.error("Error occurred while scraping holidays for {}: {}", city.getName(), e.getMessage(), e);
+            log.error("Error occurred while scraping holidays for {}/{}\n: {}", city.getName(),city.getState(), e.getMessage());
         } finally {
             teardownWebDriver();
         }
@@ -100,7 +100,7 @@ public class HolidayScraper {
                     holiday.setType(holidayType);
                     holidays.add(holiday);
                 } else {
-                    log.warn("Skipping holiday with unknown type: {} on {}", name, date);
+                    log.warn("Skipping: Type is NOT Nacional nor Municipal: {} on {}", name, date);
                 }
             }
         }
