@@ -31,7 +31,7 @@ public class HolidayEntity {
     private HolidayType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "state_id", nullable = false)
+    @JoinColumn(name = "state_id")
     private StateEntity state;
 
     @ManyToOne(fetch = FetchType.LAZY)

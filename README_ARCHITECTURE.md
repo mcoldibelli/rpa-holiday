@@ -60,7 +60,6 @@ E.g.:
 erDiagram
   STATES {
     int id PK
-    string name
     string abbreviation
   }
 

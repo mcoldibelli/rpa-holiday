@@ -19,9 +19,6 @@ public class StateEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
-
-    @Column(nullable = false, unique = true)
     private String abbreviation;
 
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
