@@ -1,0 +1,20 @@
+CREATE TABLE states (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    abbreviation VARCHAR(10) NOT NULL
+);
+
+CREATE TABLE cities (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    state_id INT NOT NULL REFERENCES STATES(id)
+);
+
+CREATE TABLE holidays (
+    id SERIAL PRIMARY KEY,
+    date DATE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    state_id INT REFERENCES STATES(id),
+    city_id INT REFERENCES CITIES(id)
+);
