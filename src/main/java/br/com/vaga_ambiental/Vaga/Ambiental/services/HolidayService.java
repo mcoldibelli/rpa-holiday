@@ -79,6 +79,16 @@ public class HolidayService {
                 feriados.add(feriadoDto);
             }
 
+            // Add national holidays
+            for (HolidayModel holiday : nationalHolidays) {
+                HolidayRequestDto.FeriadoDto feriadoDto = new HolidayRequestDto.FeriadoDto();
+                feriadoDto.setData(holiday.getDate());
+                feriadoDto.setTipo(holiday.getType());
+                feriadoDto.setFeriado(holiday.getName());
+
+                feriados.add(feriadoDto);
+            }
+
             HolidayRequestDto requestDto = new HolidayRequestDto();
             requestDto.setEstado(city.getState().getAbbreviation());
             requestDto.setCidade(city.getName());

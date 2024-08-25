@@ -1,12 +1,12 @@
 package br.com.vaga_ambiental.Vaga.Ambiental.controller;
 
-import br.com.vaga_ambiental.Vaga.Ambiental.services.ApiService;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.HolidayRequestDto;
 import br.com.vaga_ambiental.Vaga.Ambiental.services.HolidayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/holidays")
@@ -16,9 +16,10 @@ public class HolidayController {
     private HolidayService holidayService;
 
     @GetMapping("/preview")
-    public ResponseEntity<Map<String, Object>> previewHolidaysPayload() {
+    public ResponseEntity<List<HolidayRequestDto>> previewHolidaysPayload() {
+        List<HolidayRequestDto> holidayPayload = holidayService.getAllHolidaysForAllCities();
 
-        return null;
+        return ResponseEntity.ok(holidayPayload);
     }
 
     @PostMapping("/send")
