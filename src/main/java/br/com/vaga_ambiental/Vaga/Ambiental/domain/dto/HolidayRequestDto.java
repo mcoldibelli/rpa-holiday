@@ -20,7 +20,7 @@ public class HolidayRequestDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class FeriadoDto {
-        private LocalDate data;
+        private String data;
         private HolidayType tipo;
         private String feriado;
     }

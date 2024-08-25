@@ -9,6 +9,7 @@ import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.HolidayModel;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.StateModel;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.repository.CityRepository;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.repository.HolidayRepository;
+import br.com.vaga_ambiental.Vaga.Ambiental.utils.DateUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -80,6 +81,7 @@ public class HolidayService {
     }
 
     private HolidayRequestDto.FeriadoDto mapToFeriadoDto(HolidayModel holiday) {
-        return new HolidayRequestDto.FeriadoDto(holiday.getDate(), holiday.getType(), holiday.getName());
+        String formattedDate = DateUtils.format(holiday.getDate());
+        return new HolidayRequestDto.FeriadoDto(formattedDate, holiday.getType(), holiday.getName());
     }
 }
