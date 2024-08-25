@@ -1,12 +1,13 @@
 package br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.excel;
 
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.City;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityDto;
 import br.com.vaga_ambiental.Vaga.Ambiental.exceptions.ExcelProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
@@ -19,10 +20,11 @@ import java.util.List;
 @Service
 public class ExcelReader {
 
-    protected String path = "src/main/java/br/com/vaga_ambiental/Vaga/Ambiental/infrastructure/excel/Projeto vaga Ambiental.xlsx";
-
-    public List<City> readCitiesFromFile() {
-        List<City> cities = new ArrayList<>();
+    @Value("${etl.excel.path}")
+    protected String path;
+    
+    public List<CityDto> readCitiesFromFile() {
+        List<CityDto> cities = new ArrayList<>();
 
         try(FileInputStream fis = new FileInputStream(path);
             Workbook workbook = WorkbookFactory.create(fis)) {
@@ -38,7 +40,7 @@ public class ExcelReader {
                     String cityName = row.getCell(1).getStringCellValue();  // City at column B
 
                     if(state != null && cityName != null) {
-                        cities.add(new City(cityName, state));
+                        cities.add(new CityDto(cityName, state));
                     }
                 }
             }
