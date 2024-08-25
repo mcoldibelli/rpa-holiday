@@ -1,4 +1,4 @@
-package br.com.vaga_ambiental.Vaga.Ambiental.domain.model.Entity;
+package br.com.vaga_ambiental.Vaga.Ambiental.domain.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

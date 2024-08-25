@@ -2,9 +2,10 @@ package br.com.vaga_ambiental.Vaga.Ambiental.domain.service;
 
 
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.City;
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.Entity.CityEntity;
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.Entity.HolidayEntity;
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.Entity.StateEntity;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.dto.HolidayRequestDto;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.entity.CityEntity;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.entity.HolidayEntity;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.entity.StateEntity;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.Holiday;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.repository.CityRepository;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.repository.HolidayRepository;
