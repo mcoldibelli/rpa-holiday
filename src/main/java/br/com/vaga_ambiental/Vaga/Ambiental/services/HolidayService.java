@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -36,20 +37,22 @@ public class HolidayService {
         CityModel cityEntity = cityStateService.findOrCreateCity(city.getCity(), state);
 
         holidays.stream()
-            .filter(holiday -> !holidayRepository.existsByName(holiday.getName()))
-            .forEach(holiday -> {
-                HolidayModel holidayEntity = new HolidayModel();
+                .filter(holiday -> !holidayRepository.existsByName(holiday.getName()))
+                .map(holiday -> buildHolidayModel(holiday, cityEntity))
+                .forEach(holidayRepository::save);
+    }
 
-                holidayEntity.setDate(holiday.getDate());
-                holidayEntity.setName(holiday.getName());
-                holidayEntity.setType(holiday.getType());
+    private HolidayModel buildHolidayModel(HolidayDto holiday, CityModel city) {
+        HolidayModel holidayModel = new HolidayModel();
+        holidayModel.setDate(holiday.getDate());
+        holidayModel.setName(holiday.getName());
+        holidayModel.setType(holiday.getType());
 
-                if (!"Nacional".equalsIgnoreCase(holiday.getType().toString())) {
-                    holidayEntity.setCity(cityEntity);
-                }
+        if (!"NACIONAL".equalsIgnoreCase(holiday.getType().toString())) {
+            holidayModel.setCity(city);
+        }
 
-                holidayRepository.save(holidayEntity);
-            });
+        return holidayModel;
     }
 
     @Transactional
@@ -57,39 +60,26 @@ public class HolidayService {
         List<CityModel> cities = cityRepository.findAllWithStateAndHolidays();
         List<HolidayModel> nationalHolidays = holidayRepository.findAllNationalHolidays();
 
-        List<HolidayRequestDto> holidayRequests = new ArrayList<>();
+        return cities.stream()
+                .map(city -> buildHolidayRequestDto(city, nationalHolidays))
+                .collect(Collectors.toList());
+    }
 
-        for (CityModel city : cities) {
-            List<HolidayRequestDto.FeriadoDto> feriados = new ArrayList<>();
+    private HolidayRequestDto buildHolidayRequestDto(CityModel city, List<HolidayModel> nationalHolidays) {
+        List<HolidayRequestDto.FeriadoDto> feriados = new ArrayList<>();
 
-            // Add city holidays
-            for (HolidayModel holiday : city.getHolidays()) {
-                HolidayRequestDto.FeriadoDto feriadoDto = new HolidayRequestDto.FeriadoDto();
-                feriadoDto.setData(holiday.getDate());
-                feriadoDto.setTipo(holiday.getType());
-                feriadoDto.setFeriado(holiday.getName());
+        feriados.addAll(city.getHolidays().stream()
+                .map(this::mapToFeriadoDto)
+                .toList());
 
-                feriados.add(feriadoDto);
-            }
+        feriados.addAll(nationalHolidays.stream()
+                .map(this::mapToFeriadoDto)
+                .toList());
 
-            // Add national holidays
-            for (HolidayModel holiday : nationalHolidays) {
-                HolidayRequestDto.FeriadoDto feriadoDto = new HolidayRequestDto.FeriadoDto();
-                feriadoDto.setData(holiday.getDate());
-                feriadoDto.setTipo(holiday.getType());
-                feriadoDto.setFeriado(holiday.getName());
+        return new HolidayRequestDto(city.getState().getAbbreviation(), city.getName(), feriados);
+    }
 
-                feriados.add(feriadoDto);
-            }
-
-            HolidayRequestDto requestDto = new HolidayRequestDto();
-            requestDto.setEstado(city.getState().getAbbreviation());
-            requestDto.setCidade(city.getName());
-            requestDto.setFeriados(feriados);
-
-            holidayRequests.add(requestDto);
-        }
-
-        return holidayRequests;
+    private HolidayRequestDto.FeriadoDto mapToFeriadoDto(HolidayModel holiday) {
+        return new HolidayRequestDto.FeriadoDto(holiday.getDate(), holiday.getType(), holiday.getName());
     }
 }
