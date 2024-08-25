@@ -74,12 +74,10 @@ erDiagram
     date date
     string name
     string type
-    int state_id FK "Foreign Key to STATES"
     int city_id FK "Foreign Key to CITIES (nullable for national holidays)"
   }
 
   STATES ||--o{ CITIES : "has"
-  STATES ||--o{ HOLIDAYS : "has"
   CITIES ||--o{ HOLIDAYS : "has"
 ```
 

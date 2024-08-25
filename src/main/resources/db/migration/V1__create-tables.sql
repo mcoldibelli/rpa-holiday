@@ -14,6 +14,5 @@ CREATE TABLE holidays (
     date DATE NOT NULL,
     name VARCHAR(100) NOT NULL,
     type VARCHAR(50) NOT NULL,
-    state_id INT REFERENCES STATES(id),
     city_id INT REFERENCES CITIES(id)
 );

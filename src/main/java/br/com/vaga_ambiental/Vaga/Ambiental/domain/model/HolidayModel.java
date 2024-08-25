@@ -31,10 +31,6 @@ public class HolidayModel {
     private HolidayType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "state_id")
-    private StateModel state; // Nullable for national holidays
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     private CityModel city; // Nullable for national holidays
 }

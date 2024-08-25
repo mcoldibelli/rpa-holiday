@@ -23,8 +23,4 @@ public class StateModel {
 
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CityModel> cities;
-
-    @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<HolidayModel> holidays;
-
 }
