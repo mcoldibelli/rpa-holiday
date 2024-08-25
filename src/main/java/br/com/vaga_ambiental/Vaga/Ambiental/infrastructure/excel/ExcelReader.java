@@ -1,6 +1,6 @@
 package br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.excel;
 
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityDto;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityAndStateDto;
 import br.com.vaga_ambiental.Vaga.Ambiental.exceptions.ExcelProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Row;
@@ -23,8 +23,8 @@ public class ExcelReader {
     @Value("${etl.excel.path}")
     protected String path;
     
-    public List<CityDto> readCitiesFromFile() {
-        List<CityDto> cities = new ArrayList<>();
+    public List<CityAndStateDto> readCitiesFromFile() {
+        List<CityAndStateDto> cities = new ArrayList<>();
 
         try(FileInputStream fis = new FileInputStream(path);
             Workbook workbook = WorkbookFactory.create(fis)) {
@@ -37,10 +37,10 @@ public class ExcelReader {
 
                 if(row != null) {
                     String state = row.getCell(0).getStringCellValue(); // State at column A
-                    String cityName = row.getCell(1).getStringCellValue();  // City at column B
+                    String city = row.getCell(1).getStringCellValue();  // City at column B
 
-                    if(state != null && cityName != null) {
-                        cities.add(new CityDto(cityName, state));
+                    if(state != null && city != null) {
+                        cities.add(new CityAndStateDto(city, state));
                     }
                 }
             }

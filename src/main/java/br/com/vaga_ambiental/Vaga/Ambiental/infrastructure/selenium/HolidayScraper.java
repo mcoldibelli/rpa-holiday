@@ -1,6 +1,6 @@
 package br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.selenium;
 
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityDto;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityAndStateDto;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.HolidayDto;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.enums.HolidayType;
 import br.com.vaga_ambiental.Vaga.Ambiental.utils.DateUtils;
@@ -43,7 +43,7 @@ public class HolidayScraper {
         }
     }
 
-    public List<HolidayDto> scrapeHolidays(CityDto city, String year) {
+    public List<HolidayDto> scrapeHolidays(CityAndStateDto cityAndState, String year) {
         List<HolidayDto> holidays = new ArrayList<>();
 
         try {
@@ -54,18 +54,18 @@ public class HolidayScraper {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
             // Select the state and city
-            selectDropdownOptionByVisibleText(wait, "estado", city.getState());
-            selectDropdownOptionByVisibleText(wait, "cidade", city.getName());
+            selectDropdownOptionByVisibleText(wait, "estado", cityAndState.getState());
+            selectDropdownOptionByVisibleText(wait, "cidade", cityAndState.getCity());
 
             // Scrape the holidays
-            String xpath = String.format("//*[@id=\"Feriados %s %s\"]/ul", city.getName().toUpperCase(), year);
+            String xpath = String.format("//*[@id=\"Feriados %s %s\"]/ul", cityAndState.getCity().toUpperCase(), year);
             WebElement holidayList = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
 
             holidays = extractHolidays(holidayList);
-            log.info("{} has {} holiday(s) in {}.", city.getName(), holidays.size(), year);
+            log.info("{} has {} holiday(s) in {}.", cityAndState.getCity(), holidays.size(), year);
 
         } catch (Exception e) {
-            log.error("Error occurred while scraping holidays for {}/{}\n: {}", city.getName(),city.getState(), e.getMessage());
+            log.error("Error occurred while scraping holidays for {}/{}\n: {}", cityAndState.getCity(),cityAndState.getState(), e.getMessage());
         } finally {
             teardownWebDriver();
         }
