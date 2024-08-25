@@ -12,7 +12,6 @@ import br.com.vaga_ambiental.Vaga.Ambiental.domain.repository.StateRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,22 +31,8 @@ public class HolidayService {
 
     @Transactional
     public void saveHolidays(City city, List<Holiday> holidays) {
-        // Find or create the StateEntity
-        Optional<StateEntity> optionalState = stateRepository.findByName(city.getState());
-        StateEntity stateEntity = optionalState.orElseGet(() -> {
-            StateEntity newState = new StateEntity();
-            newState.setName(city.getState());
-            return stateRepository.save(newState);
-        });
-
-        // Find or create the CityEntity
-        Optional<CityEntity> optionalCity = cityRepository.findByNameAndState(city.getName(), stateEntity);
-        CityEntity cityEntity = optionalCity.orElseGet(() -> {
-            CityEntity newCity = new CityEntity();
-            newCity.setName(city.getName());
-            newCity.setState(stateEntity);
-            return cityRepository.save(newCity);
-        });
+        StateEntity stateEntity = findOrCreateState(city.getState());
+        CityEntity cityEntity = findOrCreateCity(city.getName(), stateEntity);
 
         // Convert and save the HolidayEntities
         List<HolidayEntity> holidayEntities = new ArrayList<>();
@@ -61,5 +46,24 @@ public class HolidayService {
         }
 
         holidayRepository.saveAll(holidayEntities);
+    }
+
+    private CityEntity findOrCreateCity(String name, StateEntity stateEntity) {
+        Optional<CityEntity> optionalCity = cityRepository.findByNameAndState(name, stateEntity);
+        return optionalCity.orElseGet(() -> {
+            CityEntity newCity = new CityEntity();
+            newCity.setName(name);
+            newCity.setState(stateEntity);
+            return cityRepository.save(newCity);
+        });
+    }
+
+    private StateEntity findOrCreateState(String state) {
+        Optional<StateEntity> optionalState = stateRepository.findByAbbreviation(state);
+        return optionalState.orElseGet(() -> {
+            StateEntity newState = new StateEntity();
+            newState.setAbbreviation(state);
+            return stateRepository.save(newState);
+        });
     }
 }
