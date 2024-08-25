@@ -35,28 +35,21 @@ public class HolidayService {
         StateModel state = cityStateService.findOrCreateState(city.getState());
         CityModel cityEntity = cityStateService.findOrCreateCity(city.getCity(), state);
 
-        // Convert and save the HolidayEntities
-        for (HolidayDto holiday : holidays) {
-            boolean isNationalHoliday = "Nacional".equalsIgnoreCase(holiday.getType().toString());
-            boolean existingHoliday = holidayRepository.existsByName(holiday.getName());
-
-            if (!existingHoliday) {
+        holidays.stream()
+            .filter(holiday -> !holidayRepository.existsByName(holiday.getName()))
+            .forEach(holiday -> {
                 HolidayModel holidayEntity = new HolidayModel();
 
                 holidayEntity.setDate(holiday.getDate());
                 holidayEntity.setName(holiday.getName());
                 holidayEntity.setType(holiday.getType());
 
-                // No specific city for national holidays
-                if (isNationalHoliday) {
-                    holidayEntity.setCity(null);
-                } else {
+                if (!"Nacional".equalsIgnoreCase(holiday.getType().toString())) {
                     holidayEntity.setCity(cityEntity);
                 }
 
                 holidayRepository.save(holidayEntity);
-            }
-        }
+            });
     }
 
     @Transactional
