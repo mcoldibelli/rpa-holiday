@@ -13,9 +13,6 @@ import java.util.Map;
 public class HolidayController {
 
     @Autowired
-    private ApiService apiService;
-
-    @Autowired
     private HolidayService holidayService;
 
     @GetMapping("/preview")

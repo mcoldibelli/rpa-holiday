@@ -9,32 +9,31 @@ import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.HolidayModel;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.StateModel;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.repository.CityRepository;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.repository.HolidayRepository;
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.repository.StateRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
 public class HolidayService {
 
     private final HolidayRepository holidayRepository;
+    private final CityStateService cityStateService;
     private final CityRepository cityRepository;
-    private final StateRepository stateRepository;
 
-    public HolidayService(HolidayRepository holidayRepository, CityRepository cityRepository, StateRepository stateRepository) {
+
+    public HolidayService(HolidayRepository holidayRepository, CityStateService cityStateService, CityRepository cityRepository) {
         this.holidayRepository = holidayRepository;
+        this.cityStateService = cityStateService;
         this.cityRepository = cityRepository;
-        this.stateRepository = stateRepository;
     }
 
     @Transactional
     public void saveHolidays(CityAndStateDto city, List<HolidayDto> holidays) {
-        StateModel state = findOrCreateState(city.getState());
-        CityModel cityEntity = findOrCreateCity(city.getCity(), state);
+        StateModel state = cityStateService.findOrCreateState(city.getState());
+        CityModel cityEntity = cityStateService.findOrCreateCity(city.getCity(), state);
 
         // Convert and save the HolidayEntities
         for (HolidayDto holiday : holidays) {
@@ -63,19 +62,21 @@ public class HolidayService {
     @Transactional
     public List<HolidayRequestDto> getAllHolidaysForAllCities() {
         List<CityModel> cities = cityRepository.findAllWithStateAndHolidays();
+        List<HolidayModel> nationalHolidays = holidayRepository.findAllNationalHolidays();
 
         List<HolidayRequestDto> holidayRequests = new ArrayList<>();
 
         for (CityModel city : cities) {
-            List<HolidayDto> feriados = new ArrayList<>();
+            List<HolidayRequestDto.FeriadoDto> feriados = new ArrayList<>();
 
+            // Add city holidays
             for (HolidayModel holiday : city.getHolidays()) {
-                HolidayDto holidayDto = new HolidayDto();
-                holidayDto.setDate(holiday.getDate());
-                holidayDto.setType(holiday.getType());
-                holidayDto.setName(holiday.getName());
+                HolidayRequestDto.FeriadoDto feriadoDto = new HolidayRequestDto.FeriadoDto();
+                feriadoDto.setData(holiday.getDate());
+                feriadoDto.setTipo(holiday.getType());
+                feriadoDto.setFeriado(holiday.getName());
 
-                feriados.add(holidayDto);
+                feriados.add(feriadoDto);
             }
 
             HolidayRequestDto requestDto = new HolidayRequestDto();
@@ -87,24 +88,5 @@ public class HolidayService {
         }
 
         return holidayRequests;
-    }
-
-    private CityModel findOrCreateCity(String name, StateModel state) {
-        Optional<CityModel> optionalCity = cityRepository.findByNameAndState(name, state);
-        return optionalCity.orElseGet(() -> {
-            CityModel newCity = new CityModel();
-            newCity.setName(name);
-            newCity.setState(state);
-            return cityRepository.save(newCity);
-        });
-    }
-
-    private StateModel findOrCreateState(String state) {
-        Optional<StateModel> optionalState = stateRepository.findByAbbreviation(state);
-        return optionalState.orElseGet(() -> {
-            StateModel newState = new StateModel();
-            newState.setAbbreviation(state);
-            return stateRepository.save(newState);
-        });
     }
 }
