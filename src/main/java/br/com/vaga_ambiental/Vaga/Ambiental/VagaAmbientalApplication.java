@@ -1,9 +1,9 @@
 package br.com.vaga_ambiental.Vaga.Ambiental;
 
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.City;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityAndStateDto;
+import br.com.vaga_ambiental.Vaga.Ambiental.services.HolidayService;
 import br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.excel.ExcelReader;
 import br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.selenium.HolidayScraper;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,21 +21,39 @@ public class VagaAmbientalApplication {
 	}
 
 	@Bean
-	public CommandLineRunner run(ExcelReader excelReader, HolidayScraper holidayScraper) {
+	public CommandLineRunner run(ExcelReader excelReader, HolidayScraper holidayScraper, HolidayService holidayService) {
 		return args -> {
-			List<City> cities = excelReader.readCitiesFromFile();
-			log.info("Reading cities from EXCEL: {}", cities);
+			log.info("> Starting process:");
 
-			for (City city : cities) {
+			log.info("> Reading cities from EXCEL:");
+			List<CityAndStateDto> cities = excelReader.readCitiesFromFile();
+			log.info("> Cities read: {}", cities);
+
+			for (CityAndStateDto city : cities) {
+				log.info("> Scraping holidays for {}/{}", city.getCity(), city.getState());
 				try {
 					var holidays = holidayScraper.scrapeHolidays(city, "2024");
-					log.info("Scraped {} holiday(s) for city {}/{}: {}",
-							holidays.size(), city.getName(), city.getState(), holidays);
+					if(!holidays.isEmpty()) {
+						log.info("> Scraped {} holiday(s): {}", holidays.size(), holidays);
+
+						log.info("> Saving holidays in database.");
+						holidayService.saveHolidays(city, holidays);
+						log.info("> Saved with success.");
+					} else {
+						log.warn("> No holidays found. Skipping database save.");
+					}
+
 				} catch (Exception e) {
 					log.error("Error scraping holidays for city {}/{}: {}",
-							city.getName(), city.getState(), e.getMessage(), e);
+							city.getCity(), city.getState(), e.getMessage());
 				}
 			}
+
+			log.info("> Read data from database");
+
+			log.info("> Send data to API");
+
+			log.info("> Finished process.");
 		};
 	}
 }
