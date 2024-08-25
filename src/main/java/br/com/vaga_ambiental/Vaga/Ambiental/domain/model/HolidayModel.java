@@ -1,7 +1,7 @@
-package br.com.vaga_ambiental.Vaga.Ambiental.domain.model.entity;
+package br.com.vaga_ambiental.Vaga.Ambiental.domain.model;
 
 
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.HolidayType;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.enums.HolidayType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Table(name = "holidays")
-public class HolidayEntity {
+public class HolidayModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +32,9 @@ public class HolidayEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_id")
-    private StateEntity state;
+    private StateModel state;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
-    private CityEntity city; // Nullable for national holidays
+    private CityModel city; // Nullable for national holidays
 }

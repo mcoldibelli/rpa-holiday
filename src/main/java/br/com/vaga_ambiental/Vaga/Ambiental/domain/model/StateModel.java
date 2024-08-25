@@ -1,4 +1,4 @@
-package br.com.vaga_ambiental.Vaga.Ambiental.domain.model.entity;
+package br.com.vaga_ambiental.Vaga.Ambiental.domain.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "states")
-public class StateEntity {
+public class StateModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +22,9 @@ public class StateEntity {
     private String abbreviation;
 
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CityEntity> cities;
+    private List<CityModel> cities;
 
     @OneToMany(mappedBy = "state", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<HolidayEntity> holidays;
+    private List<HolidayModel> holidays;
 
 }
