@@ -1,6 +1,9 @@
 package br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.selenium;
 
-import br.com.vaga_ambiental.Vaga.Ambiental.domain.model.*;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityDto;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.HolidayDto;
+import br.com.vaga_ambiental.Vaga.Ambiental.domain.enums.HolidayType;
+import br.com.vaga_ambiental.Vaga.Ambiental.utils.DateUtils;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -10,21 +13,21 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Slf4j
 @Service
 public class HolidayScraper {
     private WebDriver driver;
-    private static final String BASE_URL = "https://www.feriados.com.br/feriados";
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
+    
+    @Value("${web.feriados.uri}")
+    private String baseUrl;
 
     public HolidayScraper() {
         WebDriverManager.chromedriver().setup();
@@ -40,14 +43,14 @@ public class HolidayScraper {
         }
     }
 
-    public List<Holiday> scrapeHolidays(City city, String year) {
-        List<Holiday> holidays = new ArrayList<>();
+    public List<HolidayDto> scrapeHolidays(CityDto city, String year) {
+        List<HolidayDto> holidays = new ArrayList<>();
 
         try {
             setupWebDriver();
 
             // Go to base page
-            driver.get(BASE_URL);
+            driver.get(baseUrl);
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
             // Select the state and city
@@ -70,8 +73,8 @@ public class HolidayScraper {
         return holidays;
     }
 
-    private List<Holiday> extractHolidays(WebElement holidayList) {
-        List<Holiday> holidays = new ArrayList<>();
+    private List<HolidayDto> extractHolidays(WebElement holidayList) {
+        List<HolidayDto> holidays = new ArrayList<>();
         List<WebElement> holidayItems = holidayList.findElements(By.tagName("li"));
 
         for (WebElement item : holidayItems) {
@@ -83,7 +86,7 @@ public class HolidayScraper {
                 String name = parts[1].trim();
 
                 // Ensure correct date format
-                LocalDate localDate = LocalDate.parse(date, DATE_FORMATTER);
+                LocalDate localDate = DateUtils.parse(date);
 
                 // Determine the holiday type
                 WebElement divElement = item.findElement(By.tagName("div"));
@@ -93,7 +96,7 @@ public class HolidayScraper {
 
                 // Create holiday only if holidayType is MUNICIPAL or NACIONAL
                 if(holidayType != null) {
-                    Holiday holiday = new Holiday();
+                    HolidayDto holiday = new HolidayDto();
 
                     holiday.setName(name);
                     holiday.setDate(localDate);
