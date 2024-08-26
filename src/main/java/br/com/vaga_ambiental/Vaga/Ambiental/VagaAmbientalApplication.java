@@ -1,9 +1,9 @@
 package br.com.vaga_ambiental.Vaga.Ambiental;
 
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityAndStateDto;
+import br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.HolidayScraper;
 import br.com.vaga_ambiental.Vaga.Ambiental.services.HolidayService;
 import br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.excel.ExcelReader;
-import br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.selenium.HolidayScraper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

@@ -1,4 +1,4 @@
-package br.com.vaga_ambiental.Vaga.Ambiental.infrastructure.selenium;
+package br.com.vaga_ambiental.Vaga.Ambiental.infrastructure;
 
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.CityAndStateDto;
 import br.com.vaga_ambiental.Vaga.Ambiental.domain.dto.HolidayDto;
@@ -76,7 +76,7 @@ public class HolidayScraper {
         return holidays;
     }
 
-    private List<HolidayDto> extractHolidays(WebElement holidayList) {
+    public List<HolidayDto> extractHolidays(WebElement holidayList) {
         List<HolidayDto> holidays = new ArrayList<>();
         List<WebElement> holidayItems = holidayList.findElements(By.tagName("li"));
         int skippedHolidaysCounter = 0;
