@@ -65,10 +65,10 @@ public class HolidayScraper {
             WebElement holidayList = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
 
             holidays = extractHolidays(holidayList);
-            log.info("{} has {} holiday(s) in {}.", cityAndState.getCity(), holidays.size(), year);
 
         } catch (Exception e) {
-            log.error("Error occurred while scraping holidays for {}/{}\n: {}", cityAndState.getCity(),cityAndState.getState(), e.getMessage());
+            log.error(">>> Error occurred while scraping holidays for {}/{}\n: {}",
+                    cityAndState.getCity(),cityAndState.getState(), e.getMessage());
         } finally {
             teardownWebDriver();
         }
@@ -79,6 +79,7 @@ public class HolidayScraper {
     private List<HolidayDto> extractHolidays(WebElement holidayList) {
         List<HolidayDto> holidays = new ArrayList<>();
         List<WebElement> holidayItems = holidayList.findElements(By.tagName("li"));
+        int skippedHolidaysCounter = 0;
 
         for (WebElement item : holidayItems) {
             // Is shown in screen as DATE - HOLIDAY_NAME
@@ -106,10 +107,14 @@ public class HolidayScraper {
                     holiday.setType(holidayType);
                     holidays.add(holiday);
                 } else {
-                    log.warn("Skipping: Type is NOT Nacional nor Municipal: {} on {}", name, date);
+                    skippedHolidaysCounter++;
                 }
             }
         }
+        if (skippedHolidaysCounter > 0) {
+            log.warn(">> Skipped {} holiday(s) as they are not MUNICIPAL | NACIONAL.", skippedHolidaysCounter);
+        }
+
         return holidays;
     }
 

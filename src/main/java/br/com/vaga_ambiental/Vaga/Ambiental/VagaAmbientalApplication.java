@@ -23,33 +23,32 @@ public class VagaAmbientalApplication {
 	@Bean
 	public CommandLineRunner run(ExcelReader excelReader, HolidayScraper holidayScraper, HolidayService holidayService) {
 		return args -> {
-			log.info("> Starting process:");
-
+			log.info("> Starting RPA process:");
 			log.info("> Reading cities from EXCEL:");
 			List<CityAndStateDto> cities = excelReader.readCitiesFromFile();
-			log.info("> Cities read: {}", cities);
+			log.info("> {} Cities read: {}", cities.size(), cities);
 
 			for (CityAndStateDto city : cities) {
 				log.info("> Scraping holidays for {}/{}", city.getCity(), city.getState());
 				try {
 					var holidays = holidayScraper.scrapeHolidays(city, "2024");
 					if(!holidays.isEmpty()) {
-						log.info("> Scraped {} holiday(s): {}", holidays.size(), holidays);
+						log.info(">> Scraped {} holiday(s): {}", holidays.size(), holidays);
 
-						log.info("> Saving holidays in database.");
+						log.info(">> Saving holidays in database.");
 						holidayService.saveHolidays(city, holidays);
-						log.info("> Saved with success.");
+						log.info(">> Saved with success.");
 					} else {
-						log.warn("> No holidays found. Skipping database save.");
+						log.error(">> No holidays found. Possible name mismatch in {}.", city.getCity());
 					}
 
 				} catch (Exception e) {
-					log.error("Error scraping holidays for city {}/{}: {}",
+					log.error(">> Error scraping holidays for city {}/{}: {}",
 							city.getCity(), city.getState(), e.getMessage());
 				}
 			}
 
-			log.info("> Finished process.");
+			log.info("> Finished RPA process.");
 		};
 	}
 }
