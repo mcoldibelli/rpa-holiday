@@ -82,3 +82,24 @@ erDiagram
 ```
 
 ## API
+
+#### Return content from Database
+
+```http
+  GET /api/holidays/preview
+```
+
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+|  |  | **Mandatory**. Running the scrapper to populate the database |
+
+#### Send data to external API
+
+```http
+  POST /api/holidays/send
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+|       |  | **Mandatory**. Needs token on header |
+
