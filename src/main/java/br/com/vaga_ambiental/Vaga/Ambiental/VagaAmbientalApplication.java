@@ -49,10 +49,6 @@ public class VagaAmbientalApplication {
 				}
 			}
 
-			log.info("> Read data from database");
-
-			log.info("> Send data to API");
-
 			log.info("> Finished process.");
 		};
 	}
